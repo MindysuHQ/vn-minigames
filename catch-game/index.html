@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Atrapa el Objeto - VaelWynne</title>
+    <title>Atrapa el Té - VaelWynne</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     
     <style>
@@ -30,23 +30,47 @@
             text-align: center;
             box-shadow: 0 8px 20px rgba(216, 71, 113, 0.15);
             box-sizing: border-box;
+            position: relative;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
         }
 
         .game-box h2 {
             color: #d84771;
             font-size: 11px;
-            margin-top: 0;
-            margin-bottom: 10px;
+            margin: 0;
             text-transform: uppercase;
         }
 
-        .score-board {
-            font-size: 10px;
-            color: #8c737d;
-            margin-bottom: 15px;
+        .pause-btn-top {
+            background: #fff0f5;
+            border: 2px solid #ffb6c1;
+            color: #d84771;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 7px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
         }
 
-        /* Lienzo del juego (canvas) */
+        .pause-btn-top:hover {
+            background: #ffb6c1;
+            color: #fff;
+        }
+
+        .score-board {
+            font-size: 8px;
+            color: #8c737d;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-around;
+        }
+
         canvas {
             background: #fff0f5;
             border: 3px solid #ffb6c1;
@@ -56,24 +80,100 @@
             touch-action: none;
         }
 
-        .instructions {
+        /* Pantallas superpuestas (Menú, Pausa y Game Over) */
+        .overlay {
+            position: absolute;
+            top: 65px;
+            left: 20px;
+            right: 20px;
+            bottom: 35px;
+            background: rgba(255, 240, 245, 0.96);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            z-index: 10;
+        }
+
+        .overlay h3 {
+            color: #d84771;
+            font-size: 12px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .overlay p {
             font-size: 8px;
-            color: #8c737d;
-            margin-top: 12px;
-            line-height: 1.5;
+            color: #5c3246;
+            margin-bottom: 18px;
+            text-align: center;
+            line-height: 1.6;
+            padding: 0 15px;
+        }
+
+        .play-btn {
+            background: #ffb6c1;
+            border: none;
+            color: #0d0610;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 9px;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            box-shadow: 0 4px 10px rgba(216, 71, 113, 0.3);
+        }
+
+        .play-btn:hover {
+            background: #d84771;
+            color: #fff;
+        }
+
+        .play-btn:active {
+            transform: scale(0.95);
+        }
+
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
 <body>
 
     <div class="game-box">
-        <h2>▸ Atrapa el Té 🫖</h2>
-        <div class="score-board">Puntuación: <span id="score">0</span></div>
+        <div class="game-header">
+            <h2>▸ Atrapa el Té 🫖</h2>
+            <button id="pauseGameBtn" class="pause-btn-top hidden">PAUSA</button>
+        </div>
         
-        <canvas id="gameCanvas" width="340" height="300"></canvas>
+        <div class="score-board">
+            <span>Puntos: <span id="score">0</span></span>
+            <span>Récord: <span id="highScore">0</span></span>
+        </div>
         
-        <div class="instructions">
-            Usa las flechas ◄ ► o arrastra con el dedo para moverte y atrapar las tacitas 💖
+        <!-- Canvas del juego -->
+        <canvas id="gameCanvas" width="340" height="260"></canvas>
+
+        <!-- Menú de Inicio -->
+        <div id="startScreen" class="overlay">
+            <h3>¡Bienvenido al Arcade!</h3>
+            <p>Atrapa tazas, corazones y estrellas. ¡Tienes 3 vidas, si fallas 3 veces la cajita se pondrá triste!</p>
+            <button class="play-btn" id="startBtn">▶ JUGAR</button>
+        </div>
+
+        <!-- Menú de Pausa -->
+        <div id="pauseScreen" class="overlay hidden">
+            <h3>Juego en Pausa</h3>
+            <p>Tómate un respiro de VaelWynne ~</p>
+            <button class="play-btn" id="resumeBtn">▶ REANUDAR</button>
+        </div>
+
+        <!-- Pantalla de Game Over -->
+        <div id="gameOverScreen" class="overlay hidden">
+            <h3 id="gameOverTitle">¡v(T_T)v Perdiste!</h3>
+            <p>Puntuación final: <span id="finalScore">0</span></p>
+            <button class="play-btn" id="restartBtn">🔄 JUGAR OTRA VEZ</button>
         </div>
     </div>
 
@@ -81,24 +181,36 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const scoreElement = document.getElementById('score');
+        const highScoreElement = document.getElementById('highScore');
+        const finalScoreElement = document.getElementById('finalScore');
+        
+        const startScreen = document.getElementById('startScreen');
+        const pauseScreen = document.getElementById('pauseScreen');
+        const gameOverScreen = document.getElementById('gameOverScreen');
+        
+        const startBtn = document.getElementById('startBtn');
+        const resumeBtn = document.getElementById('resumeBtn');
+        const restartBtn = document.getElementById('restartBtn');
+        const pauseGameBtn = document.getElementById('pauseGameBtn');
 
         let score = 0;
+        let lives = 3;
+        let highScore = localStorage.getItem('vaelHighScore') || 0;
+        highScoreElement.textContent = highScore;
 
-        // Posición de la cesta (el jugador)
+        let gameState = 'START'; // START, PLAYING, PAUSED, GAMEOVER
+
         const catcher = {
             x: canvas.width / 2 - 30,
-            y: canvas.height - 35,
+            y: canvas.height - 30,
             width: 60,
-            height: 25,
-            speed: 6,
-            dx: 0
+            height: 22,
+            speed: 7,
         };
 
-        // Arreglo de objetos que caen (tazas, corazones)
         let items = [];
         const itemTypes = ['🫖', '💖', '⭐'];
 
-        // Control de teclado
         let rightPressed = false;
         let leftPressed = false;
 
@@ -112,8 +224,8 @@
             if (e.key === 'Left' || e.key === 'ArrowLeft') leftPressed = false;
         });
 
-        // Control táctil para celulares
         canvas.addEventListener('touchmove', (e) => {
+            if (gameState !== 'PLAYING') return;
             const rect = canvas.getBoundingClientRect();
             const touchX = e.touches[0].clientX - rect.left;
             catcher.x = touchX - catcher.width / 2;
@@ -121,34 +233,62 @@
         }, { passive: false });
 
         canvas.addEventListener('mousemove', (e) => {
+            if (gameState !== 'PLAYING') return;
             const rect = canvas.getBoundingClientRect();
             const mouseX = e.clientX - rect.left;
             catcher.x = mouseX - catcher.width / 2;
         });
 
-        // Generar objetos que caen cada cierto tiempo
-        function spawnItem() {
-            const type = itemTypes[Math.floor(Math.random() * itemTypes.length)];
-            const x = Math.random() * (canvas.width - 30);
-            items.push({ x: x, y: -20, size: 24, speed: 2 + Math.random() * 2, type: type });
+        function startGame() {
+            score = 0;
+            lives = 3;
+            items = [];
+            scoreElement.textContent = score;
+            startScreen.classList.add('hidden');
+            gameOverScreen.classList.add('hidden');
+            pauseScreen.classList.add('hidden');
+            pauseGameBtn.classList.remove('hidden');
+            gameState = 'PLAYING';
         }
 
-        setInterval(spawnItem, 1000);
+        function pauseGame() {
+            if (gameState === 'PLAYING') {
+                gameState = 'PAUSED';
+                pauseScreen.classList.remove('hidden');
+                pauseGameBtn.textContent = 'SEGUIR';
+            } else if (gameState === 'PAUSED') {
+                gameState = 'PLAYING';
+                pauseScreen.classList.add('hidden');
+                pauseGameBtn.textContent = 'PAUSA';
+            }
+        }
 
-        // Bucle principal del juego
+        startBtn.addEventListener('click', startGame);
+        restartBtn.addEventListener('click', startGame);
+        resumeBtn.addEventListener('click', pauseGame);
+        pauseGameBtn.addEventListener('click', pauseGame);
+
+        function spawnItem() {
+            if (gameState !== 'PLAYING') return;
+            const type = itemTypes[Math.floor(Math.random() * itemTypes.length)];
+            const x = Math.random() * (canvas.width - 30);
+            items.push({ x: x, y: -20, size: 22, speed: 2.5 + Math.random() * 2, type: type });
+        }
+
+        setInterval(spawnItem, 900);
+
         function update() {
-            // Mover cesta con teclado
+            if (gameState !== 'PLAYING') return;
+
             if (rightPressed && catcher.x < canvas.width - catcher.width) {
                 catcher.x += catcher.speed;
             } else if (leftPressed && catcher.x > 0) {
                 catcher.x -= catcher.speed;
             }
 
-            // Limitar la cesta dentro del canvas
             if (catcher.x < 0) catcher.x = 0;
             if (catcher.x > canvas.width - catcher.width) catcher.x = canvas.width - catcher.width;
 
-            // Actualizar objetos
             for (let i = items.length - 1; i >= 0; i--) {
                 items[i].y += items[i].speed;
 
@@ -164,30 +304,53 @@
                     continue;
                 }
 
-                // Eliminar si cae al fondo
+                // Si toca fondo (pierde vida)
                 if (items[i].y > canvas.height) {
                     items.splice(i, 1);
+                    lives--;
+                    if (lives <= 0) {
+                        endGame();
+                    }
                 }
             }
+        }
+
+        function endGame() {
+            gameState = 'GAMEOVER';
+            pauseGameBtn.classList.add('hidden');
+            finalScoreElement.textContent = score;
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('vaelHighScore', highScore);
+                highScoreElement.textContent = highScore;
+            }
+            gameOverScreen.classList.remove('hidden');
         }
 
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Dibujar la cesta (estilo base pixel art o cajita monosa)
+            // Dibujar Cesta (Cambia carita a triste si perdiste o se quedó sin vidas, pero aquí se muestra feliz y en Game Over sale el menú)
             ctx.fillStyle = '#ffb6c1';
             ctx.fillRect(catcher.x, catcher.y, catcher.width, catcher.height);
             ctx.strokeStyle = '#d84771';
             ctx.lineWidth = 2;
             ctx.strokeRect(catcher.x, catcher.y, catcher.width, catcher.height);
 
-            // Dibujar carita o detalle en la cesta
             ctx.fillStyle = '#0d0610';
-            ctx.font = '10px "Press Start 2P"';
-            ctx.fillText('v(^_^)v', catcher.x + 6, catcher.y + 17);
+            ctx.font = '9px "Press Start 2P"';
+            
+            // Si las vidas llegan a 0, la cesta dibuja una carita triste
+            let face = (lives <= 0) ? 'v(T_T)v' : 'v(^_^)v';
+            ctx.fillText(face, catcher.x + 4, catcher.y + 15);
 
-            // Dibujar objetos que caen
-            ctx.font = '20px Arial';
+            // Dibujar vidas restantes
+            ctx.fillStyle = '#d84771';
+            ctx.font = '10px "Press Start 2P"';
+            ctx.fillText('❤️'.repeat(Math.max(0, lives)), 10, 20);
+
+            // Dibujar Objetos
+            ctx.font = '18px Arial';
             for (let item of items) {
                 ctx.fillText(item.type, item.x, item.y);
             }
