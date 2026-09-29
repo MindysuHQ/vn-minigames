@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Atrapa el Objeto - VaelWynne</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: transparent;
+            color: #1a1a1a;
+            font-family: 'Press Start 2P', monospace;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        .game-box {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border: 2px solid #ffb6c1;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(216, 71, 113, 0.15);
+            box-sizing: border-box;
+        }
+
+        .game-box h2 {
+            color: #d84771;
+            font-size: 11px;
+            margin-top: 0;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .score-board {
+            font-size: 10px;
+            color: #8c737d;
+            margin-bottom: 15px;
+        }
+
+        /* Lienzo del juego (canvas) */
+        canvas {
+            background: #fff0f5;
+            border: 3px solid #ffb6c1;
+            border-radius: 8px;
+            display: block;
+            margin: 0 auto;
+            touch-action: none;
+        }
+
+        .instructions {
+            font-size: 8px;
+            color: #8c737d;
+            margin-top: 12px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-box">
+        <h2>▸ Atrapa el Té 🫖</h2>
+        <div class="score-board">Puntuación: <span id="score">0</span></div>
+        
+        <canvas id="gameCanvas" width="340" height="300"></canvas>
+        
+        <div class="instructions">
+            Usa las flechas ◄ ► o arrastra con el dedo para moverte y atrapar las tacitas 💖
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreElement = document.getElementById('score');
+
+        let score = 0;
+
+        // Posición de la cesta (el jugador)
+        const catcher = {
+            x: canvas.width / 2 - 30,
+            y: canvas.height - 35,
+            width: 60,
+            height: 25,
+            speed: 6,
+            dx: 0
+        };
+
+        // Arreglo de objetos que caen (tazas, corazones)
+        let items = [];
+        const itemTypes = ['🫖', '💖', '⭐'];
+
+        // Control de teclado
+        let rightPressed = false;
+        let leftPressed = false;
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Right' || e.key === 'ArrowRight') rightPressed = true;
+            if (e.key === 'Left' || e.key === 'ArrowLeft') leftPressed = true;
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (e.key === 'Right' || e.key === 'ArrowRight') rightPressed = false;
+            if (e.key === 'Left' || e.key === 'ArrowLeft') leftPressed = false;
+        });
+
+        // Control táctil para celulares
+        canvas.addEventListener('touchmove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const touchX = e.touches[0].clientX - rect.left;
+            catcher.x = touchX - catcher.width / 2;
+            e.preventDefault();
+        }, { passive: false });
+
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            catcher.x = mouseX - catcher.width / 2;
+        });
+
+        // Generar objetos que caen cada cierto tiempo
+        function spawnItem() {
+            const type = itemTypes[Math.floor(Math.random() * itemTypes.length)];
+            const x = Math.random() * (canvas.width - 30);
+            items.push({ x: x, y: -20, size: 24, speed: 2 + Math.random() * 2, type: type });
+        }
+
+        setInterval(spawnItem, 1000);
+
+        // Bucle principal del juego
+        function update() {
+            // Mover cesta con teclado
+            if (rightPressed && catcher.x < canvas.width - catcher.width) {
+                catcher.x += catcher.speed;
+            } else if (leftPressed && catcher.x > 0) {
+                catcher.x -= catcher.speed;
+            }
+
+            // Limitar la cesta dentro del canvas
+            if (catcher.x < 0) catcher.x = 0;
+            if (catcher.x > canvas.width - catcher.width) catcher.x = canvas.width - catcher.width;
+
+            // Actualizar objetos
+            for (let i = items.length - 1; i >= 0; i--) {
+                items[i].y += items[i].speed;
+
+                // Colisión con la cesta
+                if (
+                    items[i].y + items[i].size >= catcher.y &&
+                    items[i].x >= catcher.x - 10 &&
+                    items[i].x <= catcher.x + catcher.width
+                ) {
+                    score += 10;
+                    scoreElement.textContent = score;
+                    items.splice(i, 1);
+                    continue;
+                }
+
+                // Eliminar si cae al fondo
+                if (items[i].y > canvas.height) {
+                    items.splice(i, 1);
+                }
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Dibujar la cesta (estilo base pixel art o cajita monosa)
+            ctx.fillStyle = '#ffb6c1';
+            ctx.fillRect(catcher.x, catcher.y, catcher.width, catcher.height);
+            ctx.strokeStyle = '#d84771';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(catcher.x, catcher.y, catcher.width, catcher.height);
+
+            // Dibujar carita o detalle en la cesta
+            ctx.fillStyle = '#0d0610';
+            ctx.font = '10px "Press Start 2P"';
+            ctx.fillText('v(^_^)v', catcher.x + 6, catcher.y + 17);
+
+            // Dibujar objetos que caen
+            ctx.font = '20px Arial';
+            for (let item of items) {
+                ctx.fillText(item.type, item.x, item.y);
+            }
+        }
+
+        function loop() {
+            update();
+            draw();
+            requestAnimationFrame(loop);
+        }
+
+        loop();
+    </script>
+</body>
+</html>
