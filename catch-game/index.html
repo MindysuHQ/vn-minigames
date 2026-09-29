@@ -80,7 +80,7 @@
             touch-action: none;
         }
 
-        /* Pantallas superpuestas (Menú, Pausa y Game Over) */
+        /* Pantallas superpuestas */
         .overlay {
             position: absolute;
             top: 62px;
@@ -143,7 +143,7 @@
 
     <div class="game-box">
         <div class="game-header">
-            <h2>▸ Atrapa el Té 🫖</h2>
+            <h2>▸ Atrapa el Té</h2>
             <button id="pauseGameBtn" class="pause-btn-top hidden">PAUSA</button>
         </div>
         
@@ -158,20 +158,20 @@
         <!-- Menú de Inicio -->
         <div id="startScreen" class="overlay">
             <h3>¡Bienvenido al Arcade!</h3>
-            <p>Atrapa las tacitas y corazones. ¡Tienes 3 vidas y el botón de pausa arriba!</p>
+            <p>Atrapa las tacitas y evita que caigan. ¡Tienes 3 vidas!</p>
             <button class="play-btn" id="startBtn">▶ JUGAR</button>
         </div>
 
         <!-- Menú de Pausa -->
         <div id="pauseScreen" class="overlay hidden">
             <h3>Juego en Pausa</h3>
-            <p>Tómate un respiro de VaelWynne ~</p>
+            <p>Tómate un respiro ~</p>
             <button class="play-btn" id="resumeBtn">▶ REANUDAR</button>
         </div>
 
         <!-- Pantalla de Game Over -->
         <div id="gameOverScreen" class="overlay hidden">
-            <h3 id="gameOverTitle">¡v(T_T)v Perdiste!</h3>
+            <h3 id="gameOverTitle">v(T_T)v Perdiste</h3>
             <p>Puntuación final: <span id="finalScore">0</span></p>
             <button class="play-btn" id="restartBtn">🔄 JUGAR OTRA VEZ</button>
         </div>
@@ -198,7 +198,7 @@
         let highScore = localStorage.getItem('vaelHighScore') || 0;
         highScoreElement.textContent = highScore;
 
-        let gameState = 'START'; // START, PLAYING, PAUSED, GAMEOVER
+        let gameState = 'START'; 
 
         const catcher = {
             x: canvas.width / 2 - 30,
@@ -209,8 +209,8 @@
         };
 
         let items = [];
-        // Símbolos limpios que sí cargan perfecto en todos lados
-        const itemTypes = ['[T]', '<3', '★'];
+        // Usamos etiquetas de texto limpias que jamás fallan en fuentes retro
+        const itemTypes = ['[TÉ]', '(&)', '[★]'];
 
         let rightPressed = false;
         let leftPressed = false;
@@ -272,11 +272,11 @@
         function spawnItem() {
             if (gameState !== 'PLAYING') return;
             const type = itemTypes[Math.floor(Math.random() * itemTypes.length)];
-            const x = Math.random() * (canvas.width - 30);
+            const x = Math.random() * (canvas.width - 40);
             items.push({ x: x, y: -20, size: 22, speed: 2.5 + Math.random() * 2, type: type });
         }
 
-        setInterval(spawnItem, 900);
+        setInterval(spawnItem, 950);
 
         function update() {
             if (gameState !== 'PLAYING') return;
@@ -341,17 +341,21 @@
             ctx.fillStyle = '#0d0610';
             ctx.font = '9px "Press Start 2P"';
             
-            // Si las vidas llegan a 0, la cesta dibuja una carita triste
             let face = (lives <= 0) ? 'v(T_T)v' : 'v(^_^)v';
             ctx.fillText(face, catcher.x + 4, catcher.y + 15);
 
-            // Dibujar vidas restantes
+            // Dibujar Vidas (Texto de apoyo + cajitas estilo pixel art para las vidas)
             ctx.fillStyle = '#d84771';
-            ctx.font = '9px "Press Start 2P"';
-            ctx.fillText('Vidas: ' + '♥'.repeat(Math.max(0, lives)), 10, 18);
+            ctx.font = '8px "Press Start 2P"';
+            ctx.fillText('Vidas:', 10, 18);
+            
+            for (let i = 0; i < lives; i++) {
+                ctx.fillStyle = '#d84771';
+                ctx.fillRect(55 + (i * 15), 10, 10, 9);
+            }
 
             // Dibujar Objetos que caen
-            ctx.font = '12px "Press Start 2P"';
+            ctx.font = '10px "Press Start 2P"';
             ctx.fillStyle = '#d84771';
             for (let item of items) {
                 ctx.fillText(item.type, item.x, item.y);
