@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VaelWynne - Pix Board</title>
   <style>
-    /* Estilos base para el iframe de Tumblr */
     body {
       margin: 0;
       padding: 0;
@@ -39,7 +38,7 @@
       font-size: 10px;
       font-weight: bold;
       letter-spacing: 2px;
-      color: #fff9fc; /* Tu color rosa/blanco claro */
+      color: #fff9fc;
     }
 
     .jp-board-status {
@@ -48,7 +47,6 @@
       letter-spacing: 1px;
     }
 
-    /* Contenedor del Canvas */
     .jp-board-body {
       background-color: #111111;
       padding: 12px;
@@ -57,15 +55,13 @@
     }
 
     #paintCanvas {
-      background-color: #fff9fc; /* Fondo por defecto de tu función */
+      background-color: #fff9fc;
       cursor: crosshair;
       border: 1px dashed #333333;
-      /* Ajuste responsive estricto */
       width: 100%;
-      height: 260px; 
+      height: 260px;
     }
 
-    /* Barra de herramientas / Colores y acciones */
     .jp-board-toolbox {
       background-color: #0d0d0d;
       padding: 8px 12px;
@@ -81,7 +77,6 @@
       align-items: center;
     }
 
-    /* Botones de colores que lee tu JS */
     .color-btn {
       width: 20px;
       height: 20px;
@@ -103,7 +98,6 @@
       gap: 6px;
     }
 
-    /* Botones de acción (Borrar, Limpiar, Enviar) */
     .jp-btn {
       background: transparent;
       border: 1px solid #555555;
@@ -136,21 +130,16 @@
 <body>
 
 <div class="jp-board-container">
-  <!-- Cabecera -->
   <div class="jp-board-header">
     <span class="jp-board-title">VAELWYNNE // TOY-01</span>
     <span class="jp-board-status">● DRAW & SUBMIT</span>
   </div>
   
-  <!-- Lienzo -->
   <div class="jp-board-body">
-    <!-- ID exacta de tu JS -->
     <canvas id="paintCanvas"></canvas>
   </div>
   
-  <!-- Caja de Herramientas -->
   <div class="jp-board-toolbox">
-    <!-- Selector de colores (Clase y data-color leídos por tu JS) -->
     <div class="jp-colors-row">
       <button class="color-btn active" data-color="#1a1a1a" style="background-color: #1a1a1a;"></button>
       <button class="color-btn" data-color="#ff4a85" style="background-color: #ff4a85;"></button>
@@ -158,7 +147,6 @@
       <button class="color-btn" data-color="#00ff66" style="background-color: #00ff66;"></button>
     </div>
     
-    <!-- Botones de Acción con las IDs de tu JS -->
     <div class="jp-actions-row">
       <div>
         <button id="eraserBtn" class="jp-btn">Eraser</button>
@@ -169,16 +157,14 @@
   </div>
 </div>
 
-<!-- Pequeña corrección técnica para prevenir desajustes de trazo en iframes -->
 <script>
-  // Tu código JS busca el canvas, fijamos el tamaño interno de píxeles antes de que se ejecute tu script externo
   const htmlCanvas = document.getElementById('paintCanvas');
   htmlCanvas.width = htmlCanvas.clientWidth || 394;
   htmlCanvas.height = htmlCanvas.clientHeight || 260;
 </script>
 
-<!-- Llamamos a tu archivo pizarra.js que está en la raíz de tu repositorio -->
-<script src="pizarra.js"></script>
+<!-- Enlace directo a tu script de la pizarra alojado en tu GitHub -->
+<script src="https://raw.githubusercontent.com/MindysuHQ/vn-minigames/refs/heads/main/pizarra.js"></script>
 
 </body>
 </html>
