@@ -42,7 +42,7 @@
 
         .game-box h2 {
             color: #d84771;
-            font-size: 11px;
+            font-size: 10px;
             margin: 0;
             text-transform: uppercase;
         }
@@ -83,11 +83,11 @@
         /* Pantallas superpuestas (Menú, Pausa y Game Over) */
         .overlay {
             position: absolute;
-            top: 65px;
+            top: 62px;
             left: 20px;
             right: 20px;
-            bottom: 35px;
-            background: rgba(255, 240, 245, 0.96);
+            bottom: 20px;
+            background: rgba(255, 240, 245, 0.97);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -98,7 +98,7 @@
 
         .overlay h3 {
             color: #d84771;
-            font-size: 12px;
+            font-size: 11px;
             margin-bottom: 12px;
             text-align: center;
         }
@@ -153,12 +153,12 @@
         </div>
         
         <!-- Canvas del juego -->
-        <canvas id="gameCanvas" width="340" height="260"></canvas>
+        <canvas id="gameCanvas" width="340" height="250"></canvas>
 
         <!-- Menú de Inicio -->
         <div id="startScreen" class="overlay">
             <h3>¡Bienvenido al Arcade!</h3>
-            <p>Atrapa tazas, corazones y estrellas. ¡Tienes 3 vidas, si fallas 3 veces la cajita se pondrá triste!</p>
+            <p>Atrapa las tacitas y corazones. ¡Tienes 3 vidas y el botón de pausa arriba!</p>
             <button class="play-btn" id="startBtn">▶ JUGAR</button>
         </div>
 
@@ -209,7 +209,8 @@
         };
 
         let items = [];
-        const itemTypes = ['🫖', '💖', '⭐'];
+        // Símbolos limpios que sí cargan perfecto en todos lados
+        const itemTypes = ['[T]', '<3', '★'];
 
         let rightPressed = false;
         let leftPressed = false;
@@ -330,7 +331,7 @@
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Dibujar Cesta (Cambia carita a triste si perdiste o se quedó sin vidas, pero aquí se muestra feliz y en Game Over sale el menú)
+            // Dibujar Cesta
             ctx.fillStyle = '#ffb6c1';
             ctx.fillRect(catcher.x, catcher.y, catcher.width, catcher.height);
             ctx.strokeStyle = '#d84771';
@@ -346,11 +347,12 @@
 
             // Dibujar vidas restantes
             ctx.fillStyle = '#d84771';
-            ctx.font = '10px "Press Start 2P"';
-            ctx.fillText('❤️'.repeat(Math.max(0, lives)), 10, 20);
+            ctx.font = '9px "Press Start 2P"';
+            ctx.fillText('Vidas: ' + '♥'.repeat(Math.max(0, lives)), 10, 18);
 
-            // Dibujar Objetos
-            ctx.font = '18px Arial';
+            // Dibujar Objetos que caen
+            ctx.font = '12px "Press Start 2P"';
+            ctx.fillStyle = '#d84771';
             for (let item of items) {
                 ctx.fillText(item.type, item.x, item.y);
             }
