@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Atrapa el Té - VaelWynne</title>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <!-- Importamos una fuente estilo lettering / cursiva moderna y limpia -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&family=Pacifico&display=swap" rel="stylesheet">
     
     <style>
         body {
             background-color: transparent;
-            color: #1a1a1a;
-            font-family: 'Press Start 2P', monospace;
+            color: #4a3b42;
+            font-family: 'Quicksand', sans-serif;
             margin: 0;
             display: flex;
             flex-direction: column;
@@ -26,9 +27,9 @@
             background: rgba(255, 255, 255, 0.95);
             padding: 20px;
             border: 2px solid #ffb6c1;
-            border-radius: 12px;
+            border-radius: 16px;
             text-align: center;
-            box-shadow: 0 8px 20px rgba(216, 71, 113, 0.15);
+            box-shadow: 0 8px 25px rgba(216, 71, 113, 0.12);
             box-sizing: border-box;
             position: relative;
         }
@@ -41,21 +42,24 @@
         }
 
         .game-box h2 {
+            font-family: 'Pacifico', cursive;
             color: #d84771;
-            font-size: 10px;
+            font-size: 18px;
             margin: 0;
-            text-transform: uppercase;
+            font-weight: normal;
         }
 
         .pause-btn-top {
             background: #fff0f5;
             border: 2px solid #ffb6c1;
             color: #d84771;
-            font-family: 'Press Start 2P', monospace;
-            font-size: 7px;
-            padding: 4px 8px;
-            border-radius: 4px;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 700;
+            font-size: 10px;
+            padding: 4px 10px;
+            border-radius: 6px;
             cursor: pointer;
+            transition: all 0.2s;
         }
 
         .pause-btn-top:hover {
@@ -64,7 +68,8 @@
         }
 
         .score-board {
-            font-size: 8px;
+            font-size: 12px;
+            font-weight: 700;
             color: #8c737d;
             margin-bottom: 10px;
             display: flex;
@@ -72,9 +77,9 @@
         }
 
         canvas {
-            background: #fff0f5;
+            background: #fff8fa;
             border: 3px solid #ffb6c1;
-            border-radius: 8px;
+            border-radius: 12px;
             display: block;
             margin: 0 auto;
             touch-action: none;
@@ -83,46 +88,50 @@
         /* Pantallas superpuestas */
         .overlay {
             position: absolute;
-            top: 62px;
+            top: 65px;
             left: 20px;
             right: 20px;
             bottom: 20px;
-            background: rgba(255, 240, 245, 0.97);
+            background: rgba(255, 245, 248, 0.98);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            border-radius: 8px;
+            border-radius: 12px;
             z-index: 10;
         }
 
         .overlay h3 {
+            font-family: 'Pacifico', cursive;
             color: #d84771;
-            font-size: 11px;
-            margin-bottom: 12px;
+            font-size: 20px;
+            margin-bottom: 10px;
             text-align: center;
+            font-weight: normal;
         }
 
         .overlay p {
-            font-size: 8px;
-            color: #5c3246;
-            margin-bottom: 18px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #6e4e5e;
+            margin-bottom: 20px;
             text-align: center;
-            line-height: 1.6;
+            line-height: 1.5;
             padding: 0 15px;
         }
 
         .play-btn {
             background: #ffb6c1;
             border: none;
-            color: #0d0610;
-            font-family: 'Press Start 2P', monospace;
-            font-size: 9px;
-            padding: 10px 18px;
-            border-radius: 6px;
+            color: #4a3b42;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 700;
+            font-size: 12px;
+            padding: 10px 20px;
+            border-radius: 8px;
             cursor: pointer;
             transition: background 0.2s, transform 0.1s;
-            box-shadow: 0 4px 10px rgba(216, 71, 113, 0.3);
+            box-shadow: 0 4px 10px rgba(216, 71, 113, 0.25);
         }
 
         .play-btn:hover {
@@ -143,8 +152,8 @@
 
     <div class="game-box">
         <div class="game-header">
-            <h2>▸ Atrapa el Té</h2>
-            <button id="pauseGameBtn" class="pause-btn-top hidden">PAUSA</button>
+            <h2>Atrapa el Té ~</h2>
+            <button id="pauseGameBtn" class="pause-btn-top hidden">Pausa</button>
         </div>
         
         <div class="score-board">
@@ -157,23 +166,23 @@
 
         <!-- Menú de Inicio -->
         <div id="startScreen" class="overlay">
-            <h3>¡Bienvenido al Arcade!</h3>
-            <p>Atrapa las tacitas y evita que caigan. ¡Tienes 3 vidas!</p>
-            <button class="play-btn" id="startBtn">▶ JUGAR</button>
+            <h3>¡Hora del Té!</h3>
+            <p>Atrapa las tacitas que caen y cuida tus 3 vidas. ¡Diviértete!</p>
+            <button class="play-btn" id="startBtn">Jugar</button>
         </div>
 
         <!-- Menú de Pausa -->
         <div id="pauseScreen" class="overlay hidden">
-            <h3>Juego en Pausa</h3>
-            <p>Tómate un respiro ~</p>
-            <button class="play-btn" id="resumeBtn">▶ REANUDAR</button>
+            <h3>Pausa</h3>
+            <p>Tómate un respiro con tu tacita ~</p>
+            <button class="play-btn" id="resumeBtn">Continuar</button>
         </div>
 
         <!-- Pantalla de Game Over -->
         <div id="gameOverScreen" class="overlay hidden">
-            <h3 id="gameOverTitle">v(T_T)v Perdiste</h3>
+            <h3 id="gameOverTitle">¡Oh no, se enfrió!</h3>
             <p>Puntuación final: <span id="finalScore">0</span></p>
-            <button class="play-btn" id="restartBtn">🔄 JUGAR OTRA VEZ</button>
+            <button class="play-btn" id="restartBtn">Jugar otra vez</button>
         </div>
     </div>
 
@@ -195,22 +204,20 @@
 
         let score = 0;
         let lives = 3;
-        let highScore = localStorage.getItem('vaelHighScore') || 0;
+        let highScore = localStorage.getItem('vaelTeaHighScore') || 0;
         highScoreElement.textContent = highScore;
 
         let gameState = 'START'; 
 
         const catcher = {
-            x: canvas.width / 2 - 30,
-            y: canvas.height - 30,
-            width: 60,
+            x: canvas.width / 2 - 35,
+            y: canvas.height - 32,
+            width: 70,
             height: 22,
             speed: 7,
         };
 
         let items = [];
-        // Usamos etiquetas de texto limpias que jamás fallan en fuentes retro
-        const itemTypes = ['[TÉ]', '(&)', '[★]'];
 
         let rightPressed = false;
         let leftPressed = false;
@@ -256,11 +263,11 @@
             if (gameState === 'PLAYING') {
                 gameState = 'PAUSED';
                 pauseScreen.classList.remove('hidden');
-                pauseGameBtn.textContent = 'SEGUIR';
+                pauseGameBtn.textContent = 'Seguir';
             } else if (gameState === 'PAUSED') {
                 gameState = 'PLAYING';
                 pauseScreen.classList.add('hidden');
-                pauseGameBtn.textContent = 'PAUSA';
+                pauseGameBtn.textContent = 'Pausa';
             }
         }
 
@@ -271,12 +278,13 @@
 
         function spawnItem() {
             if (gameState !== 'PLAYING') return;
-            const type = itemTypes[Math.floor(Math.random() * itemTypes.length)];
-            const x = Math.random() * (canvas.width - 40);
-            items.push({ x: x, y: -20, size: 22, speed: 2.5 + Math.random() * 2, type: type });
+            // 0: Tacita de té, 1: Corazoncito
+            const type = Math.random() > 0.3 ? 0 : 1;
+            const x = Math.random() * (canvas.width - 30);
+            items.push({ x: x, y: -20, size: 24, speed: 2 + Math.random() * 2, type: type });
         }
 
-        setInterval(spawnItem, 950);
+        setInterval(spawnItem, 1000);
 
         function update() {
             if (gameState !== 'PLAYING') return;
@@ -296,7 +304,7 @@
                 // Colisión con la cesta
                 if (
                     items[i].y + items[i].size >= catcher.y &&
-                    items[i].x >= catcher.x - 10 &&
+                    items[i].x + 15 >= catcher.x &&
                     items[i].x <= catcher.x + catcher.width
                 ) {
                     score += 10;
@@ -322,43 +330,81 @@
             finalScoreElement.textContent = score;
             if (score > highScore) {
                 highScore = score;
-                localStorage.setItem('vaelHighScore', highScore);
+                localStorage.setItem('vaelTeaHighScore', highScore);
                 highScoreElement.textContent = highScore;
             }
             gameOverScreen.classList.remove('hidden');
         }
 
+        // Funciones auxiliares para dibujar elementos vectoriales hermosos
+        function drawTeacup(x, y) {
+            ctx.fillStyle = '#d84771';
+            // Cuerpo de la taza
+            ctx.beginPath();
+            ctx.roundRect(x, y + 6, 20, 14, [0, 0, 8, 8]);
+            ctx.fill();
+            // Oreja de la taza
+            ctx.strokeStyle = '#d84771';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(x + 20, y + 11, 4, -Math.PI/2, Math.PI/2);
+            ctx.stroke();
+            // Vapor del té
+            ctx.strokeStyle = '#ffb6c1';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(x + 6, y + 2); ctx.quadraticCurveTo(x + 8, y - 2, x + 6, y - 5);
+            ctx.moveTo(x + 14, y + 2); ctx.quadraticCurveTo(x + 16, y - 2, x + 14, y - 5);
+            ctx.stroke();
+        }
+
+        function drawHeart(x, y) {
+            ctx.fillStyle = '#ff6b8b';
+            ctx.beginPath();
+            let cx = x + 10;
+            let cy = y + 10;
+            ctx.arc(cx - 5, cy - 2, 5, Math.PI, 0, false);
+            ctx.arc(cx + 5, cy - 2, 5, Math.PI, 0, false);
+            ctx.lineTo(cx, cy + 8);
+            ctx.closePath();
+            ctx.fill();
+        }
+
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Dibujar Cesta
+            // Dibujar Cesta (Taza grande o platito estético)
             ctx.fillStyle = '#ffb6c1';
-            ctx.fillRect(catcher.x, catcher.y, catcher.width, catcher.height);
+            ctx.beginPath();
+            ctx.roundRect(catcher.x, catcher.y, catcher.width, catcher.height, [6, 6, 12, 12]);
+            ctx.fill();
             ctx.strokeStyle = '#d84771';
             ctx.lineWidth = 2;
-            ctx.strokeRect(catcher.x, catcher.y, catcher.width, catcher.height);
+            ctx.stroke();
 
-            ctx.fillStyle = '#0d0610';
-            ctx.font = '9px "Press Start 2P"';
-            
-            let face = (lives <= 0) ? 'v(T_T)v' : 'v(^_^)v';
-            ctx.fillText(face, catcher.x + 4, catcher.y + 15);
+            // Ojitos de la cesta
+            ctx.fillStyle = '#4a3b42';
+            ctx.beginPath();
+            ctx.arc(catcher.x + 22, catcher.y + 10, 2, 0, Math.PI * 2);
+            ctx.arc(catcher.x + 48, catcher.y + 10, 2, 0, Math.PI * 2);
+            ctx.fill();
 
-            // Dibujar Vidas (Texto de apoyo + cajitas estilo pixel art para las vidas)
-            ctx.fillStyle = '#d84771';
-            ctx.font = '8px "Press Start 2P"';
-            ctx.fillText('Vidas:', 10, 18);
+            // Dibujar Vidas (Corazoncitos arriba a la izquierda)
+            ctx.font = '11px "Quicksand"';
+            ctx.fillStyle = '#8c737d';
+            ctx.fillText('Vidas:', 10, 20);
             
             for (let i = 0; i < lives; i++) {
-                ctx.fillStyle = '#d84771';
-                ctx.fillRect(55 + (i * 15), 10, 10, 9);
+                drawHeart(52 + (i * 18), 7);
             }
 
-            // Dibujar Objetos que caen
-            ctx.font = '10px "Press Start 2P"';
-            ctx.fillStyle = '#d84771';
+            // Dibujar Objetos que caen (Tacitas o Corazones gráficos)
             for (let item of items) {
-                ctx.fillText(item.type, item.x, item.y);
+                if (item.type === 0) {
+                    drawTeacup(item.x, item.y);
+                } else {
+                    drawHeart(item.x, item.y);
+                }
             }
         }
 
