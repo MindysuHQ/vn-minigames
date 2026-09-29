@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VaelWynne - Pix Board</title>
+  <style>
+    /* Estilos base para el iframe de Tumblr */
+    body {
+      margin: 0;
+      padding: 0;
+      background: transparent;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      font-family: 'Courier New', Courier, monospace;
+    }
+
+    .jp-board-container {
+      width: 100%;
+      max-width: 420px;
+      background-color: #1a1a1a;
+      border: 1px solid #333333;
+      box-shadow: 6px 6px 0px #0a0a0a;
+      box-sizing: border-box;
+    }
+
+    .jp-board-header {
+      background-color: #0d0d0d;
+      padding: 8px 12px;
+      border-bottom: 1px solid #333333;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .jp-board-title {
+      font-size: 10px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      color: #fff9fc; /* Tu color rosa/blanco claro */
+    }
+
+    .jp-board-status {
+      font-size: 8px;
+      color: #00ff66;
+      letter-spacing: 1px;
+    }
+
+    /* Contenedor del Canvas */
+    .jp-board-body {
+      background-color: #111111;
+      padding: 12px;
+      display: flex;
+      justify-content: center;
+    }
+
+    #paintCanvas {
+      background-color: #fff9fc; /* Fondo por defecto de tu función */
+      cursor: crosshair;
+      border: 1px dashed #333333;
+      /* Ajuste responsive estricto */
+      width: 100%;
+      height: 260px; 
+    }
+
+    /* Barra de herramientas / Colores y acciones */
+    .jp-board-toolbox {
+      background-color: #0d0d0d;
+      padding: 8px 12px;
+      border-top: 1px solid #333333;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .jp-colors-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    /* Botones de colores que lee tu JS */
+    .color-btn {
+      width: 20px;
+      height: 20px;
+      border: 1px solid #555555;
+      cursor: pointer;
+      padding: 0;
+      box-sizing: border-box;
+      transition: transform 0.1s ease;
+    }
+
+    .color-btn.active {
+      border: 2px solid #fff9fc;
+      transform: scale(1.15);
+    }
+
+    .jp-actions-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    /* Botones de acción (Borrar, Limpiar, Enviar) */
+    .jp-btn {
+      background: transparent;
+      border: 1px solid #555555;
+      color: #a0a0a0;
+      font-family: inherit;
+      font-size: 9px;
+      padding: 5px 8px;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+    }
+
+    .jp-btn:hover {
+      background-color: #fff9fc;
+      color: #1a1a1a;
+      border-color: #fff9fc;
+    }
+
+    #sendBtn {
+      border-color: #00ff66;
+      color: #00ff66;
+    }
+    #sendBtn:hover {
+      background-color: #00ff66;
+      color: #0d0d0d;
+    }
+  </style>
+</head>
+<body>
+
+<div class="jp-board-container">
+  <!-- Cabecera -->
+  <div class="jp-board-header">
+    <span class="jp-board-title">VAELWYNNE // TOY-01</span>
+    <span class="jp-board-status">● DRAW & SUBMIT</span>
+  </div>
+  
+  <!-- Lienzo -->
+  <div class="jp-board-body">
+    <!-- ID exacta de tu JS -->
+    <canvas id="paintCanvas"></canvas>
+  </div>
+  
+  <!-- Caja de Herramientas -->
+  <div class="jp-board-toolbox">
+    <!-- Selector de colores (Clase y data-color leídos por tu JS) -->
+    <div class="jp-colors-row">
+      <button class="color-btn active" data-color="#1a1a1a" style="background-color: #1a1a1a;"></button>
+      <button class="color-btn" data-color="#ff4a85" style="background-color: #ff4a85;"></button>
+      <button class="color-btn" data-color="#4a90e2" style="background-color: #4a90e2;"></button>
+      <button class="color-btn" data-color="#00ff66" style="background-color: #00ff66;"></button>
+    </div>
+    
+    <!-- Botones de Acción con las IDs de tu JS -->
+    <div class="jp-actions-row">
+      <div>
+        <button id="eraserBtn" class="jp-btn">Eraser</button>
+        <button id="clearBtn" class="jp-btn">Clear</button>
+      </div>
+      <button id="sendBtn" class="jp-btn">Submit to Ask</button>
+    </div>
+  </div>
+</div>
+
+<!-- Pequeña corrección técnica para prevenir desajustes de trazo en iframes -->
+<script>
+  // Tu código JS busca el canvas, fijamos el tamaño interno de píxeles antes de que se ejecute tu script externo
+  const htmlCanvas = document.getElementById('paintCanvas');
+  htmlCanvas.width = htmlCanvas.clientWidth || 394;
+  htmlCanvas.height = htmlCanvas.clientHeight || 260;
+</script>
+
+<!-- Llamamos a tu archivo pizarra.js que está en la raíz de tu repositorio -->
+<script src="../pizarra.js"></script>
+
+</body>
+</html>
