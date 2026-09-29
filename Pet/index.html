@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>VaelPet - Mascota Virtual</title>
+    <!-- Fuente Press Start 2P para mantener la onda retro -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #fff9fc;
+            color: #1a1a1a;
+            font-family: 'Press Start 2P', monospace;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        .ouo-box {
+            width: 100%;
+            max-width: 450px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 30px;
+            border: 2px solid #ffb6c1;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(216, 71, 113, 0.15);
+            box-sizing: border-box;
+        }
+
+        .ouo-box h2 {
+            color: #d84771;
+            font-size: 14px;
+            margin-top: 0;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+        }
+
+        /* Contenedor de la carita */
+        .face-container {
+            position: relative;
+            width: 180px;
+            height: 120px;
+            margin: 0 auto 20px auto;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #fff0f5;
+            border: 3px solid #ffb6c1;
+            border-radius: 50px;
+            transition: transform 0.1s ease;
+        }
+
+        .face-container:active {
+            transform: scale(0.92) translateY(5px);
+        }
+
+        /* Expresión facial */
+        .face {
+            font-size: 38px;
+            color: #1a1a1a;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        /* Indicador de caricias/clicks */
+        .instruction {
+            font-size: 9px;
+            color: #8c737d;
+            margin-top: 15px;
+            line-height: 1.6;
+        }
+
+        /* Corazoncitos flotantes al acariciar */
+        .heart {
+            position: absolute;
+            color: #d84771;
+            font-size: 16px;
+            animation: floatUp 0.8s ease-out forwards;
+            pointer-events: none;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) scale(0.5);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-50px) scale(1.2);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ouo-box">
+        <h2>▸ VaelPet (Mascota)</h2>
+        
+        <div class="face-container" id="petFace">
+            <div class="face" id="expression">(>_<)</div>
+        </div>
+
+        <div class="instruction">
+            Hazle clic para consentirla<br>o pásale el mouse rápido para acariciarla 💖
+        </div>
+    </div>
+
+    <script>
+        const faceContainer = document.getElementById('petFace');
+        const expression = document.getElementById('expression');
+
+        let isTouched = false;
+
+        // Expresiones posibles
+        const normalFace = '(>_<)';
+        const happyFace = '(๑>◡<๑)';
+        const blinkFace = '(-_-)';
+
+        // Cambiar a cara feliz al hacer click
+        faceContainer.addEventListener('mousedown', () => {
+            expression.textContent = happyFace;
+            createHeart();
+        });
+
+        faceContainer.addEventListener('mouseup', () => {
+            expression.textContent = normalFace;
+        });
+
+        // Soporte para celulares (Touch)
+        faceContainer.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            expression.textContent = happyFace;
+            createHeart();
+        });
+
+        faceContainer.addEventListener('touchend', () => {
+            expression.textContent = normalFace;
+        });
+
+        // Parpadeo automático cada cierto tiempo
+        setInterval(() => {
+            if (!isTouched && expression.textContent === normalFace) {
+                expression.textContent = blinkFace;
+                setTimeout(() => {
+                    if (expression.textContent === blinkFace) {
+                        expression.textContent = normalFace;
+                    }
+                }, 200);
+            }
+        }, 3500);
+
+        // Crear corazoncitos flotantes al mover el mouse rápido (caricias)
+        let lastMove = 0;
+        faceContainer.addEventListener('mousemove', (e) => {
+            const now = Date.now();
+            if (now - lastMove > 150) {
+                createHeartAt(e.clientX, e.clientY);
+                lastMove = now;
+            }
+        });
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.textContent = '♥';
+            
+            const x = Math.random() * 100 - 50;
+            const y = Math.random() * 20 - 10;
+            
+            heart.style.left = `calc(50% + ${x}px)`;
+            heart.style.top = `calc(50% + ${y}px)`;
+            
+            faceContainer.appendChild(heart);
+            setTimeout(() => heart.remove(), 800);
+        }
+
+        function createHeartAt(x, y) {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.textContent = '💖';
+            
+            const rect = faceContainer.getBoundingClientRect();
+            heart.style.left = (x - rect.left) + 'px';
+            heart.style.top = (y - rect.top) + 'px';
+            
+            faceContainer.appendChild(heart);
+            setTimeout(() => heart.remove(), 800);
+        }
+    </script>
+</body>
+</html>
